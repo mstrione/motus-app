@@ -1,1 +1,7 @@
-<p>home works!</p>
+<h3>Home page</h3>
+
+<p *ngIf="user">Conectado como: {{user?.email}} {{user?.displayName}}</p>
+
+<button class="btn btn-primary mr-2" *ngIf="!user" (click)="register()">Registrarme!</button>
+<button class="btn btn-primary" *ngIf="user" (click)="logout()">Salir</button>
+<button class="btn btn-primary" *ngIf="!user" (click)="login()">Login</button>

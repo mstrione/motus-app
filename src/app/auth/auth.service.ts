@@ -24,7 +24,7 @@ export class AuthService {
     .then (userCredential => {
       this.newUser = user;
       userCredential.user.updateProfile({
-        displayName: user.firsname + ' ' + user.lastname
+        displayName: user.firstName + ' ' + user.lastName
       });
       this.insertUserData(userCredential)
       .then( () => {
@@ -36,6 +36,10 @@ export class AuthService {
     });
   }
 
+  getUserState() {
+    return this.afAuth.authState;
+  }
+
   insertUserData(userCredential: firebase.auth.UserCredential) {
     return this.db.doc(`Users/${userCredential.user.uid}`).set({
           email: this.newUser.email,
@@ -44,6 +48,10 @@ export class AuthService {
           role: 'USUARIO WEB'
         }
     );
+  }
+
+  logout() {
+    return this.afAuth.auth.signOut();
   }
 }
 
