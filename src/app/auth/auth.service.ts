@@ -3,6 +3,8 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import { error } from 'protractor';
+import { runInThisContext } from 'vm';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +21,25 @@ export class AuthService {
     private router: Router
   ) {}
 
+  login(email: string, password: string) {
+    this.clearErrors();
+    this.afAuth.auth.signInWithEmailAndPassword(email, password)
+    .catch(err => {
+      this.eventAuthError.next(err);
+    })
+    .then(userCredential => {
+      if (userCredential) {
+        this.router.navigate(['/home']);
+      }
+    });
+  }
+
+  clearErrors() {
+    this.eventAuthError.next('');
+  }
+
   createUser(user) {
+    this.clearErrors();
     this.afAuth.auth.createUserWithEmailAndPassword(user.email, user.password)
     .then (userCredential => {
       this.newUser = user;
@@ -31,8 +51,8 @@ export class AuthService {
         this.router.navigate(['/home']);
       });
     })
-    .catch(error => {
-      this.eventAuthError.next(error);
+    .catch(err => {
+      this.eventAuthError.next(err);
     });
   }
 
